@@ -80,6 +80,14 @@ AI Copilot that:
 
 ### Cross-Signal Correlation
 
+* Datadog sirf apna data dekhta hai. PagerDuty sirf alerts dekhta hai.
+Tumhara tool ek saath dekhta hai:
+
+* Logs + Metrics + Traces + Deployment + Infrastructure changes
+= Ek complete picture
+
+* Koi existing tool ye sab ek saath correlate nahi karta with AI reasoning. Ye tumhara #1 moat hai.
+
 ---
 
 ## 🏗️ Architecture
