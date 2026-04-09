@@ -78,6 +78,8 @@ AI Copilot that:
 
 * Generates timeline + root cause + impact
 
+## Competitors Ko Peeche Chhodne Wale Features
+
 ### Cross-Signal Correlation
 
 * Datadog sirf apna data dekhta hai. PagerDuty sirf alerts dekhta hai.
@@ -108,6 +110,102 @@ Datadog + GitHub + PagerDuty ek saath
 Prometheus + GitLab + custom webhooks ek saath
 
 Ye "neutral layer" positioning competitors replicate nahi kar sakte — kyunki unka business model lock-in pe based hai.
+
+## Customers Ko Pay Karne Pe Majboor Karne Wale Features
+
+### Time-to-Resolution Dashboard (ROI Proof)
+
+Har month ek report:
+
+```
+Before tool:  Avg RCA time = 2.5 hours
+After tool:   Avg RCA time = 14 minutes
+Money saved:  $47,000 this month
+```
+
+Jab CTO ye dashboard dekhe, cancelling impossible ho jaata hai.
+Ye feature churn ko 50%+ reduce karta hai.
+
+### Blast Radius Predictor
+
+Jab incident aaye, turant batao:
+
+* Kaunse customers affected hain?
+* Kaunsa revenue at risk hai?
+* Kaunse dependent services fail ho sakte hain next?
+
+* Ye feature CTO/CEO level pe sell karta hai — engineers nahi, leadership khareedti hai isko.
+
+### Runbook Auto-Suggester
+
+Past incidents se seekh ke:
+
+Similar incident pehle kaise solve hua?
+Exact steps kya the?
+Kaun ne solve kiya tha?
+
+"Ye wahi issue hai jo 3 months pehle tha — tab Rahul ne ye fix kiya tha"
+New engineers ke liye ye game-changer hai. Onboarding time 40% kam ho jaata hai.
+
+### Silence-Based Alerting (Anti-Fatigue)
+
+Ulta kaam karo — alerts bhejne ki jagah:
+
+Learn karo ki kaunse alerts engineers ignore karte hain
+Automatically unhe suppress karo
+Sirf woh alerts bhejo jo actually actionable hain
+
+Jab engineer ka phone raat ko nahi bajega — woh tool ka fan ban jaata hai.
+
+## "WOW" Banane Wale Features
+
+### First Incident — Instant WOW
+
+Ye sabse important feature hai jo list mein nahi hota:
+Onboarding ke 10 minute mein — pehla alert aate hi:
+
+Automatically group ho jaaye
+Plain English explanation aa jaaye
+Suggested fix dikhaye
+
+Engineer ka pehla reaction hona chahiye: "Yaar ye toh actually kaam karta hai"
+Ye moment product ka future decide karta hai.
+
+### Natural Language Incident Search
+
+```
+Engineer type kare: "payment failures last Tuesday after deployment"
+
+Tool dikhaye: exact incident, root cause, who fixed it, how long it took
+```
+
+Google jaisa feel — zero learning curve. Koi competitor ke paas ye nahi hai abhi.
+
+### Live Incident War Room
+
+Jab bada incident chal raha ho:
+
+Ek shared screen jahan sab dekh sakein kya ho raha hai
+AI real-time updates deta rahe
+"New signal detected — database connection pool 94% full"
+Automatic timeline ban rahi ho live
+
+Ye feature word-of-mouth create karta hai. Ek engineer dusre ko dikhata hai — "bhai dekh kya ho raha hai screen pe."
+
+### Postmortem in One Click
+
+Incident resolve hone ke baad:
+```
+[Generate Postmortem] button press karo
+
+30 seconds mein ready:
+✅ Timeline
+✅ Root cause
+✅ Impact
+✅ What was done to fix
+✅ Prevention steps
+```
+Engineers is feature ke liye akele tool khareed lenge. Postmortem likhna sabko nafrat hai.
 
 ---
 
