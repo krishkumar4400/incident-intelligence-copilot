@@ -78,6 +78,8 @@ AI Copilot that:
 
 * Generates timeline + root cause + impact
 
+### Cross-Signal Correlation
+
 ---
 
 ## 🏗️ Architecture
@@ -340,6 +342,8 @@ ai-incident-intelligence/\
 
 ## Architecture Diagram
 
+```
+
                            ┌──────────────────────────────┐
                            │   Observability Sources      │
                            │------------------------------│
@@ -418,6 +422,8 @@ ai-incident-intelligence/\
 │ - Summaries      │   │ - RCA timeline       │   │ - Integrations       │
 │ - Actions        │   │ - Analytics          │   │                      │
 └──────────────────┘   └──────────────────────┘   └──────────────────────┘
+
+```
 
 ---
 
