@@ -1471,3 +1471,107 @@ CRUD SaaS app
 ```
 
 ---
+
+## SYSTEM ARCHITECTURE DIAGRAM
+
+```
+                    ┌──────────────────────┐
+                    │  Monitoring Tools    │
+                    │ Prometheus/Datadog  │
+                    └─────────┬────────────┘
+                              │
+                              ▼
+                  ┌────────────────────────┐
+                  │   API Gateway /        │
+                  │   Ingestion Service    │
+                  └─────────┬──────────────┘
+                            │
+                            ▼
+                  ┌────────────────────────┐
+                  │   Queue System         │
+                  │  BullMQ / Kafka        │
+                  └─────────┬──────────────┘
+                            │
+            ┌───────────────┼───────────────┐
+            ▼                               ▼
+┌──────────────────────┐        ┌──────────────────────┐
+│ Alert Processor      │        │ Deployment Service   │
+│ (Grouping Logic)     │        │ (GitHub Webhook)     │
+└─────────┬────────────┘        └─────────┬────────────┘
+          │                               │
+          └───────────────┬───────────────┘
+                          ▼
+               ┌────────────────────────┐
+               │   Incident Service     │
+               │  (Core Engine)         │
+               └─────────┬──────────────┘
+                         │
+                         ▼
+               ┌────────────────────────┐
+               │ Correlation Engine     │
+               │ - Metrics              │
+               │ - Logs                 │
+               │ - Deployments          │
+               └─────────┬──────────────┘
+                         │
+                         ▼
+               ┌────────────────────────┐
+               │ RCA Engine (AI + Rules)│
+               └─────────┬──────────────┘
+                         │
+          ┌──────────────┼───────────────┐
+          ▼                              ▼
+┌──────────────────────┐      ┌──────────────────────┐
+│ PostgreSQL           │      │ ClickHouse           │
+│ (Incidents, RCA)     │      │ (Logs, Metrics)      │
+└─────────┬────────────┘      └─────────┬────────────┘
+          │                              │
+          └───────────────┬──────────────┘
+                          ▼
+               ┌────────────────────────┐
+               │ Notification Service   │
+               │ Slack / PagerDuty      │
+               └─────────┬──────────────┘
+                         │
+                         ▼
+               ┌────────────────────────┐
+               │ Frontend Dashboard     │
+               └────────────────────────┘
+```
+
+---
+
+## SIMPLE FLOW
+
+* Alert → Queue → Worker → Grouping → Incident → RCA → Slack
+
+---
+
+## COMPONENT RESPONSIBILITIES (IMPORTANT)
+
+<!-- 🟢 Ingestion API
+fast entry
+no heavy logic
+⚡ Queue
+buffer
+retry
+scaling
+🧠 Worker
+async processing
+🚨 Incident Engine
+grouping logic
+🔗 Correlation Engine
+connect data
+🤖 RCA Engine
+find WHY
+💬 Notification
+user output
+💣 5. WHY THIS ARCHITECTURE IS STRONG
+✅ Scalable
+queue-based
+✅ Fault-tolerant
+retry + async
+✅ Modular
+each service independent
+✅ AI-ready
+RCA layer separate -->
