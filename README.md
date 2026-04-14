@@ -1575,3 +1575,39 @@ retry + async
 each service independent
 ✅ AI-ready
 RCA layer separate -->
+
+---
+
+## Microservices Breakdown
+
+1. API Gateway
+2. Alert Service
+3. Incident Service
+4. RCA Service (AI brain)
+5. Integration Service (Slack, GitHub)
+6. Notification Service
+7. Deployment Service
+8. Auth Service
+
+## High-Level Microservices Architecture
+
+```
+                ┌──────────────────────┐
+                │   API Gateway        │
+                └─────────┬────────────┘
+                          │
+ ┌──────────────┬─────────┼───────────┬──────────────┐
+ ▼              ▼         ▼           ▼              ▼
+Auth        Alert      Incident     RCA        Integration
+Service     Service     Service     Service      Service
+              │            │           │              │
+              └──────┬─────┴──────┬────┘              │
+                     ▼            ▼                   ▼
+                Queue System   DB Layer         Notification
+               (Kafka/BullMQ)                  Service
+                     │
+                     ▼
+                Worker Services
+```
+
+---
