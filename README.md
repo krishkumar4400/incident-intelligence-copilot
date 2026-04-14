@@ -195,6 +195,7 @@ Ye feature word-of-mouth create karta hai. Ek engineer dusre ko dikhata hai — 
 ### Postmortem in One Click
 
 Incident resolve hone ke baad:
+
 ```
 [Generate Postmortem] button press karo
 
@@ -205,6 +206,7 @@ Incident resolve hone ke baad:
 ✅ What was done to fix
 ✅ Prevention steps
 ```
+
 Engineers is feature ke liye akele tool khareed lenge. Postmortem likhna sabko nafrat hai.
 
 ---
@@ -1385,5 +1387,87 @@ CRUD SaaS app
 
 * building:
   * “Reasoning Engine for Incidents”
+
+---
+
+## Flow Diagram
+
+```
+┌────────────────────────────┐
+│ Monitoring Tools           │
+│ (Prometheus / Datadog)     │
+└─────────────┬──────────────┘
+              │ Alerts (Webhook)
+              ▼
+┌────────────────────────────┐
+│ Ingestion API              │
+│ (Express.js)               │
+│ - Validate                 │
+│ - Auth check               │
+└─────────────┬──────────────┘
+              │ Push
+              ▼
+┌────────────────────────────┐
+│ Queue Layer                │
+│ (BullMQ / Kafka)           │
+│ - Buffer alerts            │
+│ - Retry mechanism          │
+└─────────────┬──────────────┘
+              │ Consume
+              ▼
+┌────────────────────────────┐
+│ Worker (Background Job)    │
+│ - Async processing         │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Alert Grouping Engine      │
+│ - Time window (5 min)      │
+│ - Same service             │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Incident Engine            │
+│ - Create/update incident   │
+│ - Map alerts → incident    │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Correlation Engine         │
+│ - Deployment check         │
+│ - Metrics pattern          │
+│ - Dependency graph         │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ RCA Engine (Brain)         │
+│ - Rule-based reasoning     │
+│ - AI explanation (LLM)     │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Storage Layer              │
+│ PostgreSQL + ClickHouse    │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Notification Layer         │
+│ Slack / PagerDuty          │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Dashboard (Frontend)       │
+│ - Incidents                │
+│ - RCA                      │
+│ - Timeline                 │
+└────────────────────────────┘
+```
 
 ---
