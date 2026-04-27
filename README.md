@@ -262,38 +262,6 @@ Slack / Dashboard Output
 
 ---
 
-## 📦 Installation
-
-```bash
-git clone https://github.com/your-username/ai-incident-intelligence.git
-cd ai-incident-intelligence
-npm install
-```
-
----
-
-## ⚙️ Environment Variables
-
-Create `.env`:
-
-```env
-PORT=4000
-OPENAI_API_KEY=your_key
-AWS_ACCESS_KEY=your_key
-SLACK_WEBHOOK_URL=your_url
-DATABASE_URL=postgres://...
-```
-
----
-
-## 🚀 Run Locally
-
-```bash
-docker-compose up --build
-```
-
----
-
 ## 🔌 Integrations
 
 * AWS CloudWatch
@@ -310,14 +278,6 @@ docker-compose up --build
 * Cloud-native teams
 * No dedicated SRE
 * Using Kubernetes / microservices
-
----
-
-## 💰 Pricing (Planned)
-
-* Starter → $99/month
-* Growth → $299/month
-* Pro → $499/month
 
 ---
 
@@ -376,24 +336,6 @@ Recommended Action: Rollback or increase pool size.
 * False positives in RCA
 * Data integration complexity
 * Trust building
-
----
-
-## 🤝 Contributing
-
-PRs are welcome. For major changes, open an issue first.
-
----
-
-## 📄 License
-
-MIT License
-
----
-
-## 👨‍💻 Author
-
-Krish Kumar
 
 ---
 
@@ -755,23 +697,13 @@ Use:
 
 ### Moat
 
-Not in:
-
-❌ UI
-❌ LLM
-❌ integrations
-
-But in:
-
 ✅ Correlation logic
 ✅ Data modeling
 ✅ Incident understanding
 
 ---
 
-### Simplified Mental Model
-
-Your system is:
+system is:
 
 * Observability Data → Structured Reasoning → AI Explanation
 
@@ -796,6 +728,8 @@ Convert noisy alerts + telemetry into one incident + root cause explanation in <
 --
 
 ### 2. Component-Level Architecture
+
+```
 
 ┌────────────────────────────┐
 │     External Systems       │
@@ -857,6 +791,7 @@ Convert noisy alerts + telemetry into one incident + root cause explanation in <
 │ Slack | Dashboard | API    │
 │ Incident Reports           │
 └────────────────────────────┘
+```
 
 ---
 
@@ -880,15 +815,19 @@ Responsibilities:
 * Normalize data
 
 Standard Event Schema:
+
+```
+
 {\
-  "source": "datadog",\
-  "service": "payment-service",\
-  "metric": "latency",\
-  "value": 1200,\
-  "threshold": 500,\
-  "severity": "high",\
-  "timestamp": 1710000000\
+  "source": "datadog",
+  "service": "payment-service",
+  "metric": "latency",
+  "value": 1200,
+  "threshold": 500,
+  "severity": "high",
+  "timestamp": 1710000000
 }
+```
 
 #### STEP 3: Stream Layer (Kafka)
 
@@ -1102,294 +1041,6 @@ Suggested Action:
 
 ---
 
-## 7. MVP vs Production
-
-MVP
-
-* Alerts → Simple clustering → Deployment check → LLM → Slack
-
-* No Kafka
-* No Graph DB
-* No complex ML
-
-### Production (Later)
-
-* Kafka
-* Dependency graph
-* Advanced scoring
-* Multi-cloud ingestion
-
----
-
-## Database Strategy
-
-* PostgreSQL → structured data (core system)
-* Optional later → ClickHouse (analytics), Redis (cache)
-
-### Core Tables (Schema Design)
-
-### 1. tenants: Multi-tenant SaaS foundation
-
-CREATE TABLE tenants (
-    id UUID PRIMARY KEY,
-    name TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 2. services: Represents microservices
-
-CREATE TABLE services (
-    id UUID PRIMARY KEY,
-    tenant_id UUID REFERENCES tenants(id),
-    name TEXT NOT NULL,
-    environment TEXT, -- prod, staging
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 3. alerts: Raw alerts from tools
-
-CREATE TABLE alerts (
-    id UUID PRIMARY KEY,
-    tenant_id UUID,
-    service_id UUID,
-    source TEXT, -- datadog / cloudwatch
-    metric TEXT,
-    value FLOAT,
-    threshold FLOAT,
-    severity TEXT,
-    timestamp TIMESTAMP,
-    raw_payload JSONB,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 4. incidents: Clustered alerts → 1 incident
-
-CREATE TABLE incidents (
-    id UUID PRIMARY KEY,
-    tenant_id UUID,
-    status TEXT DEFAULT 'open',
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
-    severity TEXT,
-    alerts_count INT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 5. incident_alerts (mapping)
-
-CREATE TABLE incident_alerts (
-    id UUID PRIMARY KEY,
-    incident_id UUID REFERENCES incidents(id),
-    alert_id UUID REFERENCES alerts(id)
-);
-
-### 6. deployments: GitHub / CI events
-
-CREATE TABLE deployments (
-    id UUID PRIMARY KEY,
-    tenant_id UUID,
-    service_id UUID,
-    version TEXT,
-    commit_hash TEXT,
-    deployed_at TIMESTAMP,
-    metadata JSONB
-);
-
-### 7. metrics_summary: Aggregated anomaly signals
-
-CREATE TABLE metrics_summary (
-    id UUID PRIMARY KEY,
-    incident_id UUID,
-    service_id UUID,
-    metric TEXT,
-    anomaly_score FLOAT,
-    value FLOAT,
-    detected_at TIMESTAMP
-);
-
-### 8. root_causes: Core output of your system
-
-CREATE TABLE root_causes (
-    id UUID PRIMARY KEY,
-    incident_id UUID,
-    service_id UUID,
-    cause_type TEXT, -- deployment / infra / traffic
-    confidence FLOAT,
-    description TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 9. incident_reports: AI-generated summaries
-
-CREATE TABLE incident_reports (
-    id UUID PRIMARY KEY,
-    incident_id UUID,
-    summary TEXT,
-    suggested_actions TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-### 10. service_dependencies (future powerful)
-
-CREATE TABLE service_dependencies (
-    id UUID PRIMARY KEY,
-    tenant_id UUID,
-    source_service_id UUID,
-    target_service_id UUID
-);
-
-### 3. Relationships (Important)
-
-Tenant\
- ├── Services\
- │    ├── Alerts\
- │    ├── Deployments\
- │\
- ├── Incidents\
- │    ├── Incident Alerts\
- │    ├── Metrics Summary\
- │    ├── Root Causes\
- │    ├── Reports\
-
-### 4. Event Models
-
-The system is event-driven.
-
-### 1. Alert Event
-
-{\
-  "event_type": "ALERT_TRIGGERED",\
-  "tenant_id": "t1",\
-  "service": "payment-service",\
-  "metric": "latency",\
-  "value": 1200,\
-  "threshold": 500,\
-  "severity": "high",\
-  "timestamp": 1710000000,\
-  "source": "datadog"\
-}
-
-### 2. Deployment Event
-
-{\
-  "event_type": "DEPLOYMENT",\
-  "tenant_id": "t1",\
-  "service": "payment-service",\
-  "version": "v3.2",\
-  "commit": "abc123",\
-  "timestamp": 1710000100\
-}
-
-### 3. Metric Anomaly Event
-
-{\
-  "event_type": "METRIC_ANOMALY",\
-  "service": "payment-service",\
-  "metric": "db_connections",\
-  "value": 900,\
-  "anomaly_score": 0.92,\
-  "timestamp": 1710000200\
-}
-
-### 4. Incident Created Event
-
-{\
-  "event_type": "INCIDENT_CREATED",\
-  "incident_id": "inc_123",\
-  "services": ["payment-service"],\
-  "alerts_count": 87,\
-  "start_time": 1710000000\
-}
-
-### 5. RCA Result Event
-
-{\
-  "event_type": "RCA_GENERATED",\
-  "incident_id": "inc_123",\
-  "root_cause": {\
-    "service": "payment-service",\
-    "type": "deployment",\
-    "confidence": 0.87\
-  }\
-}
-
-### 5. Indexing Strategy
-
-Add indexes early:
-
-CREATE INDEX idx_alerts_service_time
-ON alerts(service_id, timestamp);
-
-CREATE INDEX idx_incidents_tenant
-ON incidents(tenant_id);
-
-CREATE INDEX idx_deployments_service_time
-ON deployments(service_id, deployed_at);
-
-CREATE INDEX idx_metrics_incident
-ON metrics_summary(incident_id);
-
-### 6. Query Examples (Real Usage)
-
-#### Find incidents in last 1 hour
-
-SELECT *FROM incidents
-WHERE start_time > NOW() - INTERVAL '1 hour';
-
-#### Find deployments before incident
-
-SELECT* FROM deployments
-WHERE service_id = 'payment-service'
-AND deployed_at < incident.start_time
-ORDER BY deployed_at DESC
-LIMIT 1;
-
-#### Get root cause
-
-SELECT * FROM root_causes
-WHERE incident_id = 'inc_123'
-ORDER BY confidence DESC;
-
-#### 7. Key Design Insight
-
-The DB is NOT just storage.
-
-It enables:
-
-👉 Correlation
-👉 Timeline reconstruction
-👉 RCA scoring
-
-🚀 8. MVP Simplification
-
-alerts
-incidents
-deployments
-root_causes
-
-Skip:
-
-❌ dependency graph
-❌ metrics_summary
-❌ complex analytics
-
-🔥 Final Thought
-
-The system is:
-
-Event-driven + correlation-based + AI-assisted
-
-Not:
-
-CRUD SaaS app
-
-## Goal
-
-* building:
-  * “Reasoning Engine for Incidents”
-
----
-
 ## Flow Diagram
 
 ```
@@ -1541,12 +1192,6 @@ CRUD SaaS app
 
 ---
 
-## SIMPLE FLOW
-
-* Alert → Queue → Worker → Grouping → Incident → RCA → Slack
-
----
-
 ## COMPONENT RESPONSIBILITIES (IMPORTANT)
 
 <!-- 🟢 Ingestion API
@@ -1611,3 +1256,128 @@ Service     Service     Service     Service      Service
 ```
 
 ---
+1. Each Service (Deep Explanation)
+🔐 1. Auth Service
+
+👉 Handles:
+
+login/signup
+JWT
+🔔 2. Alert Service
+
+👉 Responsibilities:
+
+webhook receive
+validation
+push to queue
+🚨 3. Incident Service (CORE)
+
+👉 Responsibilities:
+
+alert grouping
+incident create/update
+🤖 4. RCA Service (BRAIN)
+
+👉 Responsibilities:
+
+correlation
+root cause detection
+AI explanation
+🔌 5. Integration Service
+
+👉 Handles:
+
+Slack
+GitHub
+Datadog
+📢 6. Notification Service
+
+👉 Handles:
+
+sending messages
+formatting
+🚀 7. Deployment Service
+
+👉 Handles:
+
+GitHub webhooks
+deployment tracking
+⚡ 5. Communication Pattern
+🟢 Async (MOST IMPORTANT)
+Alert → Queue → Worker → Incident
+🔵 Sync (API calls)
+Gateway → Auth Service
+Gateway → Incident Service
+
+👉 Rule:
+
+heavy work → async
+user request → sync
+🔥 6. Event-Driven Flow (REAL)
+
+1. Alert Service receives webhook
+2. Publishes event → "alert.received"
+
+3. Incident Service consumes event
+4. Groups alerts → creates incident
+5. Publishes → "incident.created"
+
+6. RCA Service consumes event
+7. Generates RCA
+8. Publishes → "rca.generated"
+
+9. Notification Service consumes event
+10. Sends Slack message
+💣 7. Event Names (IMPORTANT)
+alert.received
+incident.created
+incident.updated
+rca.generated
+notification.sent
+🗄️ 8. Database Strategy
+❗ Each service has its own DB
+Alert DB
+Incident DB
+RCA DB
+
+👉 Why?
+
+loose coupling
+independent scaling
+🔐 9. API Gateway Role
+
+👉 Single entry point:
+
+/api/v1/*
+
+👉 Handles:
+
+auth check
+routing
+rate limiting
+⚡ 10. Scaling Strategy
+Example:
+Alert Service → high scale
+RCA Service → GPU/AI heavy
+Notification → lightweight
+
+👉 Each service scales independently 🔥
+
+🧠 11. Tech Stack per Service
+
+| Service  | Tech                        |
+| -------- | --------------------------- |
+| Alert    | Node.js                     |
+| Incident | Node.js                     |
+| RCA      | Node.js + Python (optional) |
+| Queue    | Kafka                       |
+| DB       | PostgreSQL                  |
+| Cache    | Redis                       |
+
+🔥 12. Monolith vs Microservices
+
+| Feature    | Monolith | Microservices |
+| ---------- | -------- | ------------- |
+| Speed      | Fast dev | Complex       |
+| Scaling    | Limited  | Infinite      |
+| Deployment | Single   | Independent   |
