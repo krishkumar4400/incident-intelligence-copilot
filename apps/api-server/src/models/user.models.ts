@@ -3,6 +3,10 @@ import { AvailableUserRoles, UserRolesEnum } from "../utils/constants.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { models } from "mongoose";
+import type { Model } from "mongoose";
+import type { IUser } from "../types/user.ts"; // your interface for user schema
+
 const userSchema = new Schema({
   avatar: {
     type: {
@@ -74,10 +78,10 @@ userSchema.pre("save", async function () {
 });
 
 userSchema.methods.comparePassword = async function (password: string) {
-    return bcrypt.compare(password, this.password);
+  return bcrypt.compare(password, this.password);
 }
 
 
+const UserModel: Model<IUser> = models.User || model<IUser>("User", userSchema);
 
-const UserModel = model.User || model("User", userSchema);
 export default UserModel;
